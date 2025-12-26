@@ -25,7 +25,9 @@ public class UsuarioConverter {
 
     // Converte lista de EnderecoDTO para lista de Endereco (entity)
     public List<Endereco> paraListaEndereco(List<EnderecoDTO> enderecoDTOS){
-        if (enderecoDTOS == null) return  List.of();
+        if (enderecoDTOS == null){
+            return  List.of();
+        }
         return enderecoDTOS.stream().map(this::paraEndereco).toList();
     }
 
@@ -42,9 +44,9 @@ public class UsuarioConverter {
     }
 
     // Converte lista de TelefoneDTO para lista de Telefone (entity)
-    public List<Telefone> paraListaTelefone(List<TelefoneDTO> telefoneDTOS){
-        if (telefoneDTOS == null) return List.of();
-        return telefoneDTOS.stream().map(this::paraTelefone).toList();
+    public List<Telefone> paraListaTelefone(List<TelefoneDTO> telefonesDTO){
+        if (telefonesDTO == null) return List.of();
+        return telefonesDTO.stream().map(this::paraTelefone).toList();
     }
 
     // Converte TelefoneDTO em Telefone (entity)
@@ -56,50 +58,56 @@ public class UsuarioConverter {
     }
 
     // Converte Usuario (entity) em UsuarioDTO
-    public UsuarioDTO paraUsuarioDTO(Usuario usuarioDTO){
+    public UsuarioDTO paraUsuarioDTO(Usuario usuario){
         return UsuarioDTO.builder()
-                .nome(usuarioDTO.getNome())
-                .email(usuarioDTO.getEmail())
-                .senha(usuarioDTO.getSenha())
-                .enderecos(paraListaEnderecoDTO(usuarioDTO.getEnderecos()))
-                .telefones(paraListaTelefoneDTO(usuarioDTO.getTelefones()))
+                .nome(usuario.getNome())
+                .email(usuario.getEmail())
+                .senha(usuario.getSenha())
+                .enderecos(paraListaEnderecoDTO(usuario.getEnderecos()))
+                .telefones(paraListaTelefoneDTO(usuario.getTelefones()))
                 .build();
     }
 
     // Converte lista de Endereco (entity) para lista de EnderecoDTO
-    public List<EnderecoDTO> paraListaEnderecoDTO(List<Endereco> enderecoDTOS){
-        if (enderecoDTOS == null) return List.of();
-        return enderecoDTOS.stream().map(this::paraEnderecoDTO).toList();
+    public List<EnderecoDTO> paraListaEnderecoDTO(List<Endereco> enderecos){
+        if (enderecos == null){
+            return List.of();
+        }
+        return enderecos.stream().map(this::paraEnderecoDTO).toList();
     }
 
     // Converte Endereco (entity) em EnderecoDTO
-    public EnderecoDTO paraEnderecoDTO(Endereco enderecoDTO){
+    public EnderecoDTO paraEnderecoDTO(Endereco endereco){
         return EnderecoDTO.builder()
-                .rua(enderecoDTO.getRua())
-                .numero(enderecoDTO.getNumero())
-                .cidade(enderecoDTO.getCidade())
-                .complemento(enderecoDTO.getComplemento())
-                .cep(enderecoDTO.getCep())
-                .estado(enderecoDTO.getEstado())
+                .id(endereco.getId())
+                .rua(endereco.getRua())
+                .numero(endereco.getNumero())
+                .cidade(endereco.getCidade())
+                .complemento(endereco.getComplemento())
+                .cep(endereco.getCep())
+                .estado(endereco.getEstado())
                 .build();
     }
 
     // Converte lista de Telefone (entity) para lista de TelefoneDTO
-    public List<TelefoneDTO> paraListaTelefoneDTO(List<Telefone> telefoneDTOS){
-        if (telefoneDTOS == null) return List.of();
-        return telefoneDTOS.stream().map(this::paraTelefoneDTO).toList();
+    public List<TelefoneDTO> paraListaTelefoneDTO(List<Telefone> telefones){
+        if (telefones == null){
+            return List.of();
+        }
+        return telefones.stream().map(this::paraTelefoneDTO).toList();
     }
 
     // Converte Telefone (entity) em TelefoneDTO
-    public TelefoneDTO paraTelefoneDTO(Telefone telefoneDTO){
+    public TelefoneDTO paraTelefoneDTO(Telefone telefone){
         return TelefoneDTO.builder()
-                .numero(telefoneDTO.getNumero())
-                .ddd(telefoneDTO.getDdd())
+                .id(telefone.getId())
+                .numero(telefone.getNumero())
+                .ddd(telefone.getDdd())
                 .build();
    }
 
    // Atualiza dados do Usuario (entity) com valores do UsuarioDTO (update parcial)
-   public Usuario paraUpdateUsuario(UsuarioDTO usuarioDTO, Usuario entity){
+   public Usuario updateUsuario(UsuarioDTO usuarioDTO, Usuario entity){
         return Usuario.builder()
                 .id(entity.getId())
                 .nome(usuarioDTO.getNome() != null ? usuarioDTO.getNome() : entity.getNome())
@@ -109,4 +117,26 @@ public class UsuarioConverter {
                 .telefones(entity.getTelefones())
                 .build();
    }
+
+    // Atualiza dados do Endereco (entity) com valores do EnderecoDTO (update parcial)
+    public Endereco updateEndereco(EnderecoDTO enderecoDTO, Endereco entity){
+        return Endereco.builder()
+                .id(entity.getId())
+                .rua(enderecoDTO.getRua() != null ? enderecoDTO.getRua() : entity.getRua())
+                .numero(enderecoDTO.getNumero() != null ? enderecoDTO.getNumero() : entity.getNumero())
+                .cidade(enderecoDTO.getCidade() != null ? enderecoDTO.getCidade() : entity.getCidade())
+                .cep(enderecoDTO.getCep() != null ? enderecoDTO.getCep() : entity.getCep())
+                .complemento(enderecoDTO.getComplemento() != null ? enderecoDTO.getComplemento() : entity.getComplemento())
+                .estado(enderecoDTO.getEstado() != null ? enderecoDTO.getEstado() : entity.getEstado())
+                .build();
+    }
+
+    // Atualiza dados do Telefone (entity) com valores do TelefoneDTO (update parcial)
+    public Telefone updateTelefone(TelefoneDTO telefoneDTO, Telefone entity){
+        return Telefone.builder()
+                .id(entity.getId())
+                .ddd(telefoneDTO.getDdd() != null ? telefoneDTO.getDdd() : entity.getDdd())
+                .numero(telefoneDTO.getNumero() != null ? telefoneDTO.getNumero() : entity.getNumero())
+                .build();
+    }
 }
