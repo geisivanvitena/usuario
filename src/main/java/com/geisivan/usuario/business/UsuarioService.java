@@ -6,6 +6,7 @@ import com.geisivan.usuario.infrastructure.entity.Usuario;
 import com.geisivan.usuario.infrastructure.exceptions.ConflictException;
 import com.geisivan.usuario.infrastructure.exceptions.ResourceNotFoundException;
 import com.geisivan.usuario.infrastructure.repository.UsuarioRepository;
+import com.geisivan.usuario.infrastructure.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final UsuarioConverter usuarioConverter;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
     public UsuarioDTO salvaUsuario(UsuarioDTO usuarioDTO){
         emailExiste(usuarioDTO.getEmail());
@@ -48,5 +50,29 @@ public class UsuarioService {
 
     public void deletaUsuarioPorEmail(String email){
         usuarioRepository.deleteByEmail(email);
+    }
+
+    public UsuarioDTO atualizaDadosUsuario(String token, UsuarioDTO usuarioDTO){
+
+        // Remove o prefixo "Bearer " do token e extrai o e-mail (username) do JWT
+        String email = jwtUtil.extractUsername(token.substring(7));
+
+        // Criptografia de senha
+        usuarioDTO.setSenha(usuarioDTO.getSenha() != null ? passwordEncoder.encode(usuarioDTO.getSenha()) : null );
+
+        // Busca o usuário na base de dados pelo e-mail extraído do token
+        // Caso não exista, lança exceção de recurso não encontrado
+        Usuario usuarioEntity = usuarioRepository.findByEmail(email).orElseThrow(
+                () -> new ResourceNotFoundException("Atenção: E-mail não encontrado. " + email)
+        );
+
+        // Cria um novo objeto Usuario com os dados atualizados (update parcial),
+        // Mantém os dados existentes quando o DTO possui valores nulos
+        Usuario usuario = usuarioConverter.paraUpdateUsuario(usuarioDTO, usuarioEntity);
+
+        // Salva o usuário atualizado no banco de dados
+        // Converte a entidade salva para UsuarioDTO para retorno
+        return usuarioConverter.paraUsuarioDTO(usuarioRepository.save(usuario));
+
     }
 }
