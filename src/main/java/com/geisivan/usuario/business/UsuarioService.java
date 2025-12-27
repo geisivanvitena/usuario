@@ -46,6 +46,7 @@ public class UsuarioService {
             if (existe){
                 throw new ConflictException("Atenção: E-mail já cadastrado. " + email);
             }
+
         }catch (ConflictException e){
             throw new ConflictException("Atenção: E-mail já cadastrado. " + e.getCause());
         }
@@ -60,7 +61,6 @@ public class UsuarioService {
         }catch (ResourceNotFoundException e){
             throw new ResourceNotFoundException("Atenção: E-mail não encontrado. ", e.getCause());
         }
-
     }
 
     public void deletaUsuarioPorEmail(String email){
@@ -126,5 +126,4 @@ public class UsuarioService {
                 telefoneRepository.save(telefone)
         );
     }
-
 }
