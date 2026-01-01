@@ -33,7 +33,7 @@ Este microserviço é uma API REST responsável pelo gerenciamento de usuários 
 - Spring Web (REST)
 - Spring Data JPA
 - Spring Security + JWT
-- Gradle
+- Maven
 - Banco de Dados: PostgreSQL
 - Postman (testes e validação dos endpoints)
 
